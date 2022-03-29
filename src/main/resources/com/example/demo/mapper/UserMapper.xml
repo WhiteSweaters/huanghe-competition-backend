@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.UserMapper">
+
+    <insert id="takeCareOf">
+        insert into tb_attention(care,beCaredOf) values (#{caredId},#{beCaredOfId})
+    </insert>
+
+    <insert id="toReport">
+        insert into tb_report(cid) values (#{realCid})
+    </insert>
+    <update id="changeUserForEvaluation">
+        update tb_user set newForEvaluation= false where id=#{uid}
+    </update>
+
+    <select id="findCareRelationShip" resultType="java.lang.Long">
+        select id from tb_attention where care = #{caredId} and beCaredOf=#{beCaredOfId}
+    </select>
+    <select id="searchUserByNickname" resultType="com.example.demo.pojo.User">
+        select * from tb_user where nickname=#{nickname}
+    </select>
+    <select id="getBeCaredOfUsers" resultType="com.example.demo.pojo.User">
+        SELECT u.birthday,u.nickname,u.motto,u.id,u.header_image FROM tb_attention AS a, tb_user AS u WHERE a.care = #{care} AND a.beCaredOf = u.id
+    </select>
+
+    <select id="getJournalismList" resultType="com.example.demo.pojo.Journalism">
+        select * from tb_journalism
+    </select>
+    <select id="getDetailsByJid" resultType="com.example.demo.pojo.JournalismDetails">
+        select * from tb_journalism_details where jid = #{jid}
+    </select>
+
+
+</mapper>

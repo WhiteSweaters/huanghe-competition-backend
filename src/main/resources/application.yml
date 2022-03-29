@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: demo
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://101.35.97.220:3307/competition
+    username: root
+    password: root
+
+  redis:
+    host: 101.35.97.220
+    database: 0
+    port: 6379
+  mvc:
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/
+server:
+  port: 8083
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+

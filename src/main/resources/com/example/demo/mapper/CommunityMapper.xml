@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.CommunityMapper">
+    <insert id="uploadComment">
+        insert into tb_community_comment (content,cid,uid) values (#{content},#{cid},#{uid})
+    </insert>
+
+    <select id="getCommunityInfo" resultType="com.example.demo.pojo.Community">
+
+    </select>
+    <select id="getTotalCount" resultType="java.lang.Integer">
+        select count(*) from tb_community
+    </select>
+    <select id="getPagination" resultType="com.example.demo.pojo.Community">
+        select c.content,c.hearts,c.id, c.uid,c.tag,c.lon,c.lat,c.street,
+         u.nickname, u.header_image from tb_community as c , tb_user as u where c.uid=u.id
+        and tag = #{tag}
+        limit #{begin},#{end}
+    </select>
+    <select id="getImageList" resultType="java.lang.String" parameterType="com.example.demo.pojo.Community">
+        select image from tb_community_images where cid = #{id}
+    </select>
+    <select id="selectCountByUid" resultType="java.lang.Integer">
+        select count(*) from tb_community where uid=#{uid}
+    </select>
+    <select id="getListByUid" resultType="com.example.demo.pojo.Community">
+        select c.content,c.hearts,c.id, c.uid,c.tag,c.lon,c.lat,c.street, u.nickname, u.header_image from tb_community as c , tb_user as u where c.uid=u.id and c.uid=#{uid}
+    </select>
+    <select id="getCommentNumByCid" resultType="java.lang.Integer">
+        select count(*) from tb_community_comment where cid=#{cid}
+    </select>
+
+    <select id="getCommentListByCid" resultType="com.example.demo.pojo.Comment">
+        SELECT u.nickname,cc.content FROM tb_community AS c, tb_community_comment AS cc , tb_user AS u WHERE c.id=cc.cid AND cc.uid = u.id AND c.id= #{cid}
+    </select>
+    <select id="getPagination2" resultType="com.example.demo.pojo.Community">
+         select c.content,c.hearts,c.id, c.uid,c.tag,c.lon,c.lat,c.street,
+         u.nickname, u.header_image from tb_community as c , tb_user as u where c.uid=u.id
+        limit #{begin},#{end}
+    </select>
+</mapper>
