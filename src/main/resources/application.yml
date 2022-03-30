@@ -3,14 +3,34 @@ spring:
     name: demo
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://101.35.97.220:3307/competition
+    url: jdbc:mysql://101.35.97.220:3307/competition?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
     username: root
     password: root
+    #  补充配置
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 15
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 500000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+
 
   redis:
     host: 101.35.97.220
     database: 0
     port: 6379
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 30
+        max-wait: 10000
+        min-idle: 10
+    timeout: 60s
   mvc:
     static-path-pattern: /static/**
   resources:
