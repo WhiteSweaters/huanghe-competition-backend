@@ -11,6 +11,10 @@
     <insert id="toReport">
         insert into tb_report(cid) values (#{realCid})
     </insert>
+
+    <insert id="commitDiary">
+        insert into tb_diary(date,weather,mood,content,uid,image) values (#{date},#{weather},#{mood},#{content},#{uid},#{image})
+    </insert>
     <update id="changeUserForEvaluation">
         update tb_user set newForEvaluation= false where id=#{uid}
     </update>
@@ -30,6 +34,9 @@
     </select>
     <select id="getDetailsByJid" resultType="com.example.demo.pojo.JournalismDetails">
         select * from tb_journalism_details where jid = #{jid}
+    </select>
+    <select id="getDiaryListByUid" resultType="com.example.demo.pojo.Diary">
+        select * from tb_diary where uid = #{uid}
     </select>
 
 

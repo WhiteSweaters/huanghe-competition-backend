@@ -203,6 +203,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Diary> getDiaryListByUid(Long uid) {
+        List<Diary> diaryList = userMapper.getDiaryListByUid(uid);
+        for (Diary diary : diaryList) {
+            String image1 = diary.getImage();
+            String image2 = IPConstant.url + image1;
+            diary.setImage(image2);
+        }
+        return diaryList;
+    }
+
+    @Override
+    public void commitDiary(Diary diary) {
+        userMapper.commitDiary(diary);
+    }
+
+    @Override
     public String getBgImgById(Long valueOf) {
         return IPConstant.url + userMapper.getBgImgById(valueOf);
     }

@@ -70,4 +70,8 @@ public interface UserMapper {
     List<Journalism> getJournalismList();
 
     List<JournalismDetails> getDetailsByJid(Long jid);
+
+    List<Diary> getDiaryListByUid(Long uid);
+
+    void commitDiary(Diary diary);
 }

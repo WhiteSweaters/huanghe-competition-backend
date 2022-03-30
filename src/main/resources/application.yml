@@ -17,9 +17,6 @@ spring:
       max-lifetime: 500000
       connection-timeout: 30000
       connection-test-query: SELECT 1
-
-
-
   redis:
     host: 101.35.97.220
     database: 0

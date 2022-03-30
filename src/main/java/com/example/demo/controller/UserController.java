@@ -474,4 +474,53 @@ public class UserController {
         return new Result(true, "返回新闻信息成功", journalismDetailsList);
     }
 
+    /**
+     * 获取用户日记列表
+     *
+     * @param uidStr
+     * @return
+     */
+    @GetMapping("/getDiaryListByUid/{uid}")
+    public Result getDiaryListByUid(@PathVariable(value = "uid") String uidStr) {
+
+        Long uid = Long.valueOf(uidStr);
+//        获取日记列表
+        List<Diary> diaryList = null;
+        try {
+            diaryList = userService.getDiaryListByUid(uid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Result(false, "返回日记列表失败，请联系管理员解决", null);
+        }
+
+        return new Result(true, "返回日记列表成功", diaryList);
+    }
+
+    /**
+     * 用户上传日记接口
+     * @param diary
+     * @return
+     * @throws IOException
+     */
+    @PostMapping("/commitDiary")
+    public Result commitDiary(@RequestBody Diary diary) throws IOException {
+
+        String image = diary.getImage();
+        BASE64Decoder base64Decoder = new BASE64Decoder();
+        byte[] bytes = base64Decoder.decodeBuffer(image);
+//        七牛云上传图片
+        QiNiuYunUtil.uploadFile2(QiNiuYunUtil.ACCESS_KEY, QiNiuYunUtil.SECRET_KEY, QiNiuYunUtil.BUCKET_NAME, bytes);
+        diary.setImage(QiNiuYunUtil.hashName);
+
+//        根据用户id储存日记信息
+        try {
+            userService.commitDiary(diary);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Result(false, "上传日记失败，请联系管理员解决", null);
+        }
+
+        return new Result(true, "上传日记成功", null);
+    }
+
 }
