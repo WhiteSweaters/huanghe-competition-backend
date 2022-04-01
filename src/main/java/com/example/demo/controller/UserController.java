@@ -530,7 +530,7 @@ public class UserController {
         QiNiuYunUtil.uploadFile2(QiNiuYunUtil.ACCESS_KEY, QiNiuYunUtil.SECRET_KEY, QiNiuYunUtil.BUCKET_NAME, bytes);
 
 //        新建实体对象
-        Diary diary = new Diary(null, date, weather, mood, content, uid, QiNiuYunUtil.hashName, tag,title);
+        Diary diary = new Diary(null, date, weather, mood, content, uid, QiNiuYunUtil.hashName, tag, title);
 
 //        存储数据
         try {
@@ -559,7 +559,35 @@ public class UserController {
             e.printStackTrace();
             return new Result(false, "获取连续写日记天数失败，请联系管理员解决", null);
         }
-        return new Result(true,"返回连续日记天数成功",consecutiveDays);
+        return new Result(true, "返回连续日记天数成功", consecutiveDays);
+    }
+
+    /**
+     * 分页查询用户日记列表
+     * @param currentPageStr
+     * @param pageSizeStr
+     * @param uidStr
+     * @return
+     */
+    @GetMapping("/getDiaryListPagination")
+    public Result getDiaryListPagination(@RequestParam(name = "currentPage") String currentPageStr,
+                                         @RequestParam(name = "pageSize") String pageSizeStr,
+                                         @RequestParam(name = "uid") String uidStr
+    ) {
+
+//        转换数据类型
+        Long uid = Long.valueOf(uidStr);
+        Integer currentPage = Integer.parseInt(currentPageStr);
+        Integer pageSize = Integer.parseInt(pageSizeStr);
+
+        Pagination<Diary> pagination = null;
+        try {
+            pagination = userService.getDiaryListPagination(currentPage,pageSize,uid);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(false,"返回日记列表数据失败，请联系管理员解决",null);
+        }
+        return new Result(true,"返回日记列表数据成功",pagination);
     }
 
 }

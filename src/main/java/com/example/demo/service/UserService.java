@@ -49,4 +49,6 @@ public interface UserService {
     void commitDiary(Diary diary);
 
     Integer getConsecutiveDays(Long uid);
+
+    Pagination<Diary> getDiaryListPagination(Integer currentPage, Integer pageSize, Long uid);
 }

@@ -236,14 +236,30 @@ public class UserServiceImpl implements UserService {
         Integer count = 1;
         for (int i = 0; i < diaryList.size() - 1; i++) {
             Long time1 = diaryList.get(i).getDate().getTime();
-            Long time2 = diaryList.get(i+1).getDate().getTime();
-            if(time1 - time2 <=86400000){
+            Long time2 = diaryList.get(i + 1).getDate().getTime();
+            if (time1 - time2 <= 86400000) {
                 count++;
-            }else {
+            } else {
                 break;
             }
         }
         return count;
+    }
+
+    @Override
+    public Pagination<Diary> getDiaryListPagination(Integer currentPage, Integer pageSize, Long uid) {
+
+        Integer totalCount = userMapper.getDiaryTotalCount(uid);
+        Integer totalPage = totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1;
+        Integer begin = (currentPage - 1) * pageSize;
+        Integer end = currentPage * pageSize;
+        List<Diary> diaryList = userMapper.getDiaryListPagination(begin, end, uid);
+        for (Diary diary : diaryList) {
+            String image1 = diary.getImage();
+            String image2 = IPConstant.url + image1;
+            diary.setImage(image2);
+        }
+        return new Pagination<Diary>(currentPage, pageSize, totalPage, totalCount, diaryList);
     }
 
     @Override

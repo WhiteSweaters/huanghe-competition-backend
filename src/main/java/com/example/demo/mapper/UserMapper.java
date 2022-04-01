@@ -79,4 +79,9 @@ public interface UserMapper {
     Integer findDiaryStatus(Long uid, Date date);
 
     void updateDiary(Diary diary);
+
+    @Select("select count(*) from tb_diary where uid=#{uid}")
+    Integer getDiaryTotalCount(Long uid);
+
+    List<Diary> getDiaryListPagination(Integer begin, Integer end, Long uid);
 }
