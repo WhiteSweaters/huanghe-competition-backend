@@ -38,4 +38,7 @@ public class Diary implements Serializable {
 //    用户附加的图片
     private String image;
 
+//    这篇日记的情绪色彩
+    private String tag;
+
 }

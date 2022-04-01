@@ -15,7 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -498,29 +501,46 @@ public class UserController {
 
     /**
      * 用户上传日记接口
-     * @param diary
+     *
+     * @param map
      * @return
      * @throws IOException
      */
     @PostMapping("/commitDiary")
-    public Result commitDiary(@RequestBody Diary diary) throws IOException {
+    public Result commitDiary(@RequestBody Map map) throws IOException, ParseException {
 
-        String image = diary.getImage();
+        String content = (String) map.get("content");
+        String dateStr = (String) map.get("date");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = simpleDateFormat.parse(dateStr);
+        String mood = (String) map.get("mood");
+        String tag = (String) map.get("tag");
+        String uidStr = (String) map.get("uid");
+        Long uid = Long.valueOf(uidStr);
+        String title = (String) map.get("title");
+        String weather = (String) map.get("weather");
+
+        List<Map> tempImageList = (List<Map>) map.get("tempImageList");
+        Map map1 = tempImageList.get(0);
+        List list = (List) map1.get("assets");
+        Map map2 = (Map) list.get(0);
+        String base64 = (String) map2.get("base64");
         BASE64Decoder base64Decoder = new BASE64Decoder();
-        byte[] bytes = base64Decoder.decodeBuffer(image);
-//        七牛云上传图片
+        byte[] bytes = base64Decoder.decodeBuffer(base64);
         QiNiuYunUtil.uploadFile2(QiNiuYunUtil.ACCESS_KEY, QiNiuYunUtil.SECRET_KEY, QiNiuYunUtil.BUCKET_NAME, bytes);
-        diary.setImage(QiNiuYunUtil.hashName);
 
-//        根据用户id储存日记信息
+//        新建实体对象
+        Diary diary = new Diary(null, date, weather, mood, content, uid, QiNiuYunUtil.hashName, tag);
+
+//        存储数据
         try {
             userService.commitDiary(diary);
         } catch (Exception e) {
             e.printStackTrace();
-            new Result(false, "上传日记失败，请联系管理员解决", null);
+            return new Result(false, "上传日记失败，请联系管理员解决", null);
         }
 
-        return new Result(true, "上传日记成功", null);
+        return new Result(true, "上传成功", null);
     }
 
 }

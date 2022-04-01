@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.pojo.*;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 public interface UserMapper {
@@ -74,4 +75,8 @@ public interface UserMapper {
     List<Diary> getDiaryListByUid(Long uid);
 
     void commitDiary(Diary diary);
+
+    Integer findDiaryStatus(Long uid, Date date);
+
+    void updateDiary(Diary diary);
 }

@@ -143,9 +143,9 @@ public class UserServiceImpl implements UserService {
         List<Meditation> meditationList = userMapper.getMeditationList();
         for (Meditation meditation : meditationList) {
             String image1 = meditation.getImage();
-            String image2 = IPConstant.url+image1;
+            String image2 = IPConstant.url + image1;
             String video1 = meditation.getVideo();
-            String video2 = IPConstant.url+video1;
+            String video2 = IPConstant.url + video1;
             meditation.setImage(image2);
             meditation.setVideo(video2);
         }
@@ -215,7 +215,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void commitDiary(Diary diary) {
-        userMapper.commitDiary(diary);
+        Long uid = diary.getUid();
+        Date date = diary.getDate();
+//        判断该用户当天是否已经上传过日记
+        Integer count = userMapper.findDiaryStatus(uid, date);
+        if (count == null || count == 0) {
+//            若不存在，则进行插入操作
+            userMapper.commitDiary(diary);
+        }else {
+//            若存在，则执行更新操作
+            userMapper.updateDiary(diary);
+        }
+
     }
 
     @Override
