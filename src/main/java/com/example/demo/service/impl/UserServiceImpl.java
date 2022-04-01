@@ -222,11 +222,28 @@ public class UserServiceImpl implements UserService {
         if (count == null || count == 0) {
 //            若不存在，则进行插入操作
             userMapper.commitDiary(diary);
-        }else {
+        } else {
 //            若存在，则执行更新操作
             userMapper.updateDiary(diary);
         }
 
+    }
+
+    @Override
+    public Integer getConsecutiveDays(Long uid) {
+        List<Diary> diaryList = userMapper.getDiaryListByUid(uid);
+//        如何利用连续这个条件？
+        Integer count = 1;
+        for (int i = 0; i < diaryList.size() - 1; i++) {
+            Long time1 = diaryList.get(i).getDate().getTime();
+            Long time2 = diaryList.get(i+1).getDate().getTime();
+            if(time1 - time2 <=86400000){
+                count++;
+            }else {
+                break;
+            }
+        }
+        return count;
     }
 
     @Override

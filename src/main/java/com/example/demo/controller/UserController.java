@@ -530,7 +530,7 @@ public class UserController {
         QiNiuYunUtil.uploadFile2(QiNiuYunUtil.ACCESS_KEY, QiNiuYunUtil.SECRET_KEY, QiNiuYunUtil.BUCKET_NAME, bytes);
 
 //        新建实体对象
-        Diary diary = new Diary(null, date, weather, mood, content, uid, QiNiuYunUtil.hashName, tag);
+        Diary diary = new Diary(null, date, weather, mood, content, uid, QiNiuYunUtil.hashName, tag,title);
 
 //        存储数据
         try {
@@ -541,6 +541,25 @@ public class UserController {
         }
 
         return new Result(true, "上传成功", null);
+    }
+
+    /**
+     * 获取用户连续写日记的天数
+     *
+     * @param uidStr
+     * @return
+     */
+    @GetMapping("/getConsecutiveDays/{uid}")
+    public Result getConsecutiveDays(@PathVariable(value = "uid") String uidStr) {
+        Integer consecutiveDays = null;
+        Long uid = Long.valueOf(uidStr);
+        try {
+            consecutiveDays = userService.getConsecutiveDays(uid);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, "获取连续写日记天数失败，请联系管理员解决", null);
+        }
+        return new Result(true,"返回连续日记天数成功",consecutiveDays);
     }
 
 }

@@ -13,13 +13,13 @@
     </insert>
 
     <insert id="commitDiary">
-        insert into tb_diary(date,weather,mood,content,uid,image,tag) values (#{date},#{weather},#{mood},#{content},#{uid},#{image},#{tag})
+        insert into tb_diary(date,weather,mood,content,uid,image,tag,title) values (#{date},#{weather},#{mood},#{content},#{uid},#{image},#{tag},#{title})
     </insert>
     <update id="changeUserForEvaluation">
         update tb_user set newForEvaluation= false where id=#{uid}
     </update>
     <update id="updateDiary">
-        update tb_diary set weather=#{weather},mood=#{mood},content=#{content},image=#{image},tag=#{tag} where uid=#{uid} and date=#{date}
+        update tb_diary set weather=#{weather},mood=#{mood},content=#{content},image=#{image},tag=#{tag},title=#{title} where uid=#{uid} and date=#{date}
     </update>
 
     <select id="findCareRelationShip" resultType="java.lang.Long">
@@ -39,7 +39,7 @@
         select * from tb_journalism_details where jid = #{jid}
     </select>
     <select id="getDiaryListByUid" resultType="com.example.demo.pojo.Diary">
-        select * from tb_diary where uid = #{uid}
+        select * from tb_diary where uid = #{uid} order by date desc
     </select>
     <select id="findDiaryStatus" resultType="java.lang.Integer">
         select count(id) from tb_diary where uid=#{uid} and date=#{date}

@@ -41,4 +41,7 @@ public class Diary implements Serializable {
 //    这篇日记的情绪色彩
     private String tag;
 
+//    日记标题
+    private String title;
+
 }

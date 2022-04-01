@@ -47,4 +47,6 @@ public interface UserService {
     List<Diary> getDiaryListByUid(Long uid);
 
     void commitDiary(Diary diary);
+
+    Integer getConsecutiveDays(Long uid);
 }
