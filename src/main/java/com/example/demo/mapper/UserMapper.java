@@ -62,7 +62,7 @@ public interface UserMapper {
     @Select("select * from tb_meditation")
     List<Meditation> getMeditationList();
 
-    @Select("select * from tb_sentence limit 0,10")
+    @Select("select * from tb_sentence  limit 0,10")
     List<Sentence> getSentence();
 
     @Select("select * from tb_book where name = #{name}")

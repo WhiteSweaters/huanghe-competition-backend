@@ -16,7 +16,7 @@
     <select id="getPagination" resultType="com.example.demo.pojo.Community">
         select c.content,c.hearts,c.id, c.uid,c.tag,c.lon,c.lat,c.street,
          u.nickname, u.header_image from tb_community as c , tb_user as u where c.uid=u.id
-        and tag = #{tag}
+        and tag = #{tag} order by c.currentTime desc
         limit #{begin},#{end}
     </select>
     <select id="getImageList" resultType="java.lang.String" parameterType="com.example.demo.pojo.Community">
@@ -37,7 +37,7 @@
     </select>
     <select id="getPagination2" resultType="com.example.demo.pojo.Community">
          select c.content,c.hearts,c.id, c.uid,c.tag,c.lon,c.lat,c.street,
-         u.nickname, u.header_image from tb_community as c , tb_user as u where c.uid=u.id
-        limit #{begin},#{end}
+         u.nickname, u.header_image from tb_community as c , tb_user as u where c.uid=u.id order by c.currentTime desc
+         limit #{begin},#{end}
     </select>
 </mapper>

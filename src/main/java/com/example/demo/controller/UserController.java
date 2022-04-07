@@ -462,6 +462,11 @@ public class UserController {
         return new Result(true, "返回新闻信息成功", journalismList);
     }
 
+    /**
+     * 获取新闻详情
+     * @param jidStr
+     * @return
+     */
     @GetMapping("/getDetailsByJid/{jid}")
     public Result getDetailsByJid(@PathVariable(value = "jid") String jidStr) {
         Long jid = Long.valueOf(jidStr);
@@ -589,5 +594,6 @@ public class UserController {
         }
         return new Result(true,"返回日记列表数据成功",pagination);
     }
+
 
 }

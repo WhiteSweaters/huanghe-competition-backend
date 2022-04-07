@@ -44,4 +44,5 @@ public class Diary implements Serializable {
 //    日记标题
     private String title;
 
+
 }

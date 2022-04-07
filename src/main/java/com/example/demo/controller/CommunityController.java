@@ -100,7 +100,6 @@ public class CommunityController {
             e.printStackTrace();
             return new Result(false, "拉取动态失败，请联系管理员解决", null);
         }
-
         return new Result(true, "拉取动态成功", pagination);
     }
 

@@ -7,6 +7,7 @@ import com.example.demo.pojo.Community;
 import com.example.demo.service.CommunityService;
 import com.example.demo.vo.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,8 +48,7 @@ public class CommunityServiceImpl implements CommunityService {
 
         List<Community> communityList = null;
 //        范围查询
-        if (tag == null) {
-            tag = "";
+        if (tag == null || "".equals(tag)) {
             communityList = communityMapper.getPagination2(begin, end);
         } else {
             communityList = communityMapper.getPagination(begin, end, tag);

@@ -1,6 +1,7 @@
 spring:
   application:
     name: demo
+#    mysql配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://101.35.97.220:3307/competition?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true
@@ -17,6 +18,7 @@ spring:
       max-lifetime: 500000
       connection-timeout: 30000
       connection-test-query: SELECT 1
+#    redis配置
   redis:
     host: 101.35.97.220
     database: 0
@@ -28,12 +30,19 @@ spring:
         max-wait: 10000
         min-idle: 10
     timeout: 60s
+#    mongodb配置
+  data:
+    mongodb:
+      uri: mongodb://101.35.97.220:27017/admin?maxpoolsize=10&minpoolsize=1&maxidletimems=600000&maxlifetimems=1800000
+  #    springmvc配置
   mvc:
     static-path-pattern: /static/**
   resources:
     static-locations: classpath:/
+#    端口
 server:
   port: 8083
+#  mybatis配置
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
