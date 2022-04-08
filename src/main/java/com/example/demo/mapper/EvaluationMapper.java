@@ -2,6 +2,7 @@ package com.example.demo.mapper;
 
 import com.example.demo.pojo.Evaluation;
 import com.example.demo.pojo.OrderSetting;
+import com.example.demo.pojo.Reason;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Date;
@@ -10,14 +11,14 @@ import java.util.Map;
 
 public interface EvaluationMapper {
 
-    @Select("select tag,score from tb_reason")
-    List<Map<String, Object>> getBtnData();
+    @Select("select * from tb_reason")
+    List<Reason> getBtnData();
 
     @Insert("insert into tb_result (result,uid) values(#{result},#{uid})")
     void result(Integer result, Integer uid);
 
     @Select("select result from tb_result where uid = #{uid}")
-    Integer getResultByUid(@Param("uid") Long realUid);
+    Map<String,Object> getResultByUid(@Param("uid") Long realUid);
 
     @Select("select result from tb_result where uid = #{result}")
     Integer selectResultByUid(Integer uid);
@@ -58,4 +59,19 @@ public interface EvaluationMapper {
 
     @Delete("delete from tb_appointment where telephone = #{telephone} and orderDate=#{orderDate}")
     void cancelBooking(String telephone, String orderDate);
+
+    @Select("select count(uid) from tb_result")
+    Integer findUserResult(Long uid);
+
+    @Insert("insert into tb_result (uid,score,reasonid) values(#{uid},#{score},#{reid})")
+    void addResult(Long uid, Integer score, Integer reid);
+
+    List<Reason> getResultListByUid(Long realUid);
+
+    @Select("select score from tb_result where uid = #{realUid}")
+    Integer[] getScoreByUid(Long realUid);
+
+    void updateResult(Long uid, Integer score, Integer reid);
+
+    void deleteResultByUid(Long uid);
 }

@@ -2,17 +2,17 @@ package com.example.demo.service;
 
 import com.example.demo.pojo.Evaluation;
 import com.example.demo.pojo.OrderSetting;
+import com.example.demo.pojo.Reason;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public interface EvaluationService {
-    List<Map<String, Object>> getBtnData();
+    List<Reason> getBtnData();
 
-    void result(Integer result, Integer uid);
 
-    Integer getResultByUid(Long realUid);
+    Map<String,Object> getResultByUid(Long realUid);
 
     void addOrderSetting(List<OrderSetting> orderSettingList);
 
@@ -23,4 +23,6 @@ public interface EvaluationService {
     List<Evaluation> getUserAppointmentStatus(String telephone);
 
     void cancelBooking(String telephone, String orderDate);
+
+    void submitResult(Long uid, Integer score, Integer[] reasonid);
 }

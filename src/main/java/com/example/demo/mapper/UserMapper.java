@@ -51,7 +51,7 @@ public interface UserMapper {
 
     List<User> getBeCaredOfUsers(@Param("care") Long realUid);
 
-    void changeUserForEvaluation(Integer uid);
+    void changeUserForEvaluation(Long uid);
 
     @Select("select * from tb_active_mood")
     List<ActiveMood> activeMoodFirst();

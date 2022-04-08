@@ -3,12 +3,14 @@ package com.example.demo.controller;
 
 import com.example.demo.pojo.Evaluation;
 import com.example.demo.pojo.OrderSetting;
+import com.example.demo.pojo.Reason;
 import com.example.demo.result.Result;
 import com.example.demo.service.EvaluationService;
 import com.example.demo.utils.POIUtils;
 import com.example.demo.utils.SMSUtil;
 import com.example.demo.utils.ValidateCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,39 +47,18 @@ public class EvaluationController {
     @GetMapping("/getBtnData")
     public Result getBtnData() {
 
-        List<Map<String, Object>> btnDataList = null;
+        List<Reason> reasonList = null;
 
         try {
-            btnDataList = evaluationService.getBtnData();
+            reasonList = evaluationService.getBtnData();
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "返回选项失败，请联系后台管理员解决", null);
         }
-        return new Result(true, "返回按钮数据成功", btnDataList);
+        return new Result(true, "返回按钮数据成功", reasonList);
     }
 
-    /**
-     * 将用户的心理状况存入后台数据库
-     *
-     * @param resultStr
-     * @param uidStr
-     * @return
-     */
-    @GetMapping("/result")
-    public Result result(@RequestParam(name = "result") String resultStr,
-                         @RequestParam(name = "uid") String uidStr) {
-        Integer result = Integer.parseInt(resultStr);
-        Integer uid = Integer.parseInt(uidStr);
 
-        try {
-            evaluationService.result(result, uid);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result(false, "上传数据失败，请联系后台管理员解决", null);
-        }
-
-        return new Result(true, "上传数据成功", null);
-    }
 
     /**
      * 根据用户ID获取用户的心理状况
@@ -88,15 +69,15 @@ public class EvaluationController {
     @GetMapping("/getResultByUid/{uid}")
     public Result getResultByUid(@PathVariable(value = "uid") String uid) {
         Long realUid = Long.valueOf(uid);
-        Integer result = null;
+       Map<String,Object> map = null;
         try {
-            result = evaluationService.getResultByUid(realUid);
+           map =  evaluationService.getResultByUid(realUid);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "返回用户心理健康状况失败，请联系后台管理员解决", null);
         }
 
-        return new Result(true, "返回用户心理健康信息成功", result);
+        return new Result(true, "返回用户心理健康信息成功", map);
     }
 
     /**
@@ -240,11 +221,33 @@ public class EvaluationController {
     @RequestMapping("/cancelBooking")
     public Result cancelBooking(String telephone, String orderDate) {
         try {
-            evaluationService.cancelBooking(telephone,orderDate);
+            evaluationService.cancelBooking(telephone, orderDate);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "取消预约失败，请联系后台管理员解决", null);
         }
         return new Result(true, "取消预约成功", null);
+    }
+
+    /**
+     * 将用户选项信息存入数据库
+     * @param uidStr
+     * @param scoreStr
+     * @param reasonid
+     * @return
+     */
+    @GetMapping("/submitResult")
+    public Result submitResult(@RequestParam(value = "uid") String uidStr,
+                               @RequestParam(value = "score") String scoreStr,
+                               @RequestParam(value = "reasonid") Integer[] reasonid) {
+        Long uid = Long.valueOf(uidStr);
+        Integer score = Integer.parseInt(scoreStr);
+        try {
+            evaluationService.submitResult(uid,score,reasonid);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result(false,"上传测评结果失败，请联系管理员解决",null);
+        }
+        return new Result(true,"上传测评信息成功",null);
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.mapper.EvaluationMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.Evaluation;
 import com.example.demo.pojo.OrderSetting;
+import com.example.demo.pojo.Reason;
 import com.example.demo.service.EvaluationService;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,25 +31,20 @@ public class EvaluationServiceImpl implements EvaluationService {
     private UserMapper userMapper;
 
     @Override
-    public List<Map<String, Object>> getBtnData() {
+    public List<Reason> getBtnData() {
         return evaluationMapper.getBtnData();
     }
 
-    @Override
-    public void result(Integer result, Integer uid) {
-        Integer resultBefore = evaluationMapper.selectResultByUid(uid);
-        if (resultBefore == null || resultBefore == 0) {
-            evaluationMapper.result(result, uid);
-            userMapper.changeUserForEvaluation(uid);
-        } else {
-            evaluationMapper.changeResult(result, uid);
-        }
 
-    }
 
     @Override
-    public Integer getResultByUid(Long realUid) {
-        return evaluationMapper.getResultByUid(realUid);
+    public Map<String,Object> getResultByUid(Long realUid) {
+        List<Reason> reasonList = evaluationMapper.getResultListByUid(realUid);
+        Map<String ,Object> map = new HashMap<String, Object>();
+        map.put("reasonList",reasonList);
+        Integer[] scores = evaluationMapper.getScoreByUid(realUid);
+        map.put("score",scores[0]);
+        return map;
     }
 
     @Override
@@ -70,18 +67,18 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public Integer makeAnAppointment(String name, String telephone, String idCard,String orderDate1,String orderDate2) {
+    public Integer makeAnAppointment(String name, String telephone, String idCard, String orderDate1, String orderDate2) {
 
 //        判断当天的预约数是否已满
         OrderSetting orderSetting = evaluationMapper.getOrderSettingByOrderDate(orderDate2);
 //        如果当天不开放预约  则返回对应提示
-        if(orderSetting == null){
+        if (orderSetting == null) {
             return 0;
         }
         Integer number = orderSetting.getNumber();
         Integer reservations = orderSetting.getReservations();
 //        如果已经预约满了 就给用户返回相应信息
-        if(reservations >= number){
+        if (reservations >= number) {
             return 1;
         }
 //        没满的话，则储存用户信息，并给当天的预约人数+1
@@ -92,7 +89,7 @@ public class EvaluationServiceImpl implements EvaluationService {
 //        tb_appointment_ordersetting表
         Long aid = evaluationMapper.getAidByOrderDate1(orderDate1);
         Long oid = evaluationMapper.getOidByOrderDate2(orderDate2);
-        evaluationMapper.link2Tables(aid,oid);
+        evaluationMapper.link2Tables(aid, oid);
         return 2;
     }
 
@@ -103,7 +100,26 @@ public class EvaluationServiceImpl implements EvaluationService {
 
     @Override
     public void cancelBooking(String telephone, String orderDate) {
-        evaluationMapper.cancelBooking(telephone,orderDate);
+        evaluationMapper.cancelBooking(telephone, orderDate);
+    }
+
+    @Override
+    public void submitResult(Long uid, Integer score, Integer[] reasonid) {
+
+        Integer count = evaluationMapper.findUserResult(uid);
+        if (count == null || count == 0) {
+//            执行插入操作
+            userMapper.changeUserForEvaluation(uid);
+            for (Integer reid : reasonid) {
+                evaluationMapper.addResult(uid, score, reid);
+            }
+        }else {
+//            执行更新操作(先删再插)
+            evaluationMapper.deleteResultByUid(uid);
+            for (Integer reid : reasonid) {
+                evaluationMapper.addResult(uid, score, reid);
+            }
+        }
     }
 
 

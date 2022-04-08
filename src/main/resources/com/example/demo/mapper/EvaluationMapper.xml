@@ -12,6 +12,14 @@
     <update id="changeReservations">
         update tb_ordersetting set reservations = reservations+1 where orderDate=#{orderDate}
     </update>
+    <update id="updateResult">
+    </update>
+    <delete id="deleteResultByUid">
+        delete from tb_result where uid = #{uid}
+    </delete>
+    <select id="getResultListByUid" resultType="com.example.demo.pojo.Reason">
+        select re.* from tb_reason as re ,tb_result as r where r.uid=#{realUid} and re.id=r.reasonid
+    </select>
 
 
 </mapper>
