@@ -241,7 +241,7 @@ public class EvaluationController {
                                @RequestParam(value = "score") String scoreStr,
                                @RequestParam(value = "reasonid") Integer[] reasonid) {
         Long uid = Long.valueOf(uidStr);
-        Integer score = Integer.parseInt(scoreStr);
+        Double score = Double.valueOf(scoreStr);
         try {
             evaluationService.submitResult(uid,score,reasonid);
         }catch (Exception e){

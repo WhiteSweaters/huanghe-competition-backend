@@ -24,5 +24,5 @@ public interface EvaluationService {
 
     void cancelBooking(String telephone, String orderDate);
 
-    void submitResult(Long uid, Integer score, Integer[] reasonid);
+    void submitResult(Long uid, Double score, Integer[] reasonid);
 }

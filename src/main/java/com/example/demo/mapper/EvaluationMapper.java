@@ -64,7 +64,7 @@ public interface EvaluationMapper {
     Integer findUserResult(Long uid);
 
     @Insert("insert into tb_result (uid,score,reasonid) values(#{uid},#{score},#{reid})")
-    void addResult(Long uid, Integer score, Integer reid);
+    void addResult(Long uid, Double score, Integer reid);
 
     List<Reason> getResultListByUid(Long realUid);
 

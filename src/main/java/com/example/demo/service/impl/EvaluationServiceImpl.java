@@ -6,12 +6,10 @@ import com.example.demo.pojo.Evaluation;
 import com.example.demo.pojo.OrderSetting;
 import com.example.demo.pojo.Reason;
 import com.example.demo.service.EvaluationService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +32,6 @@ public class EvaluationServiceImpl implements EvaluationService {
     public List<Reason> getBtnData() {
         return evaluationMapper.getBtnData();
     }
-
-
 
     @Override
     public Map<String,Object> getResultByUid(Long realUid) {
@@ -104,7 +100,7 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public void submitResult(Long uid, Integer score, Integer[] reasonid) {
+    public void submitResult(Long uid, Double score, Integer[] reasonid) {
 
         Integer count = evaluationMapper.findUserResult(uid);
         if (count == null || count == 0) {
