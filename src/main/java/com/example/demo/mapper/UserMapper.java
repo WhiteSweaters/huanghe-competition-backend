@@ -59,8 +59,7 @@ public interface UserMapper {
     @Select("select * from tb_active_details where acid = #{acId}")
     List<QueAndAns> getQuestionDetailsById(Long acId);
 
-    @Select("select * from tb_meditation")
-    List<Meditation> getMeditationList();
+    List<Meditation> getMeditationList(Integer begin,Integer pageSize);
 
     @Select("select * from tb_sentence  limit 0,10")
     List<Sentence> getSentence();
@@ -84,4 +83,6 @@ public interface UserMapper {
     Integer getDiaryTotalCount(Long uid);
 
     List<Diary> getDiaryListPagination(Integer begin, Integer end, Long uid);
+
+    Integer getAllMeditationCount();
 }

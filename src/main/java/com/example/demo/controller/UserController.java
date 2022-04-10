@@ -388,18 +388,20 @@ public class UserController {
      * @return
      */
     @GetMapping("/getMeditationList")
-    public Result getMeditationList() {
+    public Result getMeditationList(@RequestParam(value = "currentPage") String currentPageStr,
+                                    @RequestParam(value = "pageSize") String pageSizeStr) {
 
-        List<Meditation> meditationList = null;
-
+        Integer currentPage = Integer.parseInt(currentPageStr);
+        Integer pageSize = Integer.parseInt(pageSizeStr);
+        Pagination<Meditation> paginationList = null;
         try {
-            meditationList = userService.getMeditationList();
+            paginationList = userService.getMeditationList(currentPage,pageSize);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "查询冥想音频文件失败，请与后台管理员联系", null);
         }
-
-        return new Result(true, "查询成功", meditationList);
+        System.out.println(paginationList);
+        return new Result(true, "查询成功", paginationList);
     }
 
     /**
@@ -464,6 +466,7 @@ public class UserController {
 
     /**
      * 获取新闻详情
+     *
      * @param jidStr
      * @return
      */
@@ -569,6 +572,7 @@ public class UserController {
 
     /**
      * 分页查询用户日记列表
+     *
      * @param currentPageStr
      * @param pageSizeStr
      * @param uidStr
@@ -587,12 +591,12 @@ public class UserController {
 
         Pagination<Diary> pagination = null;
         try {
-            pagination = userService.getDiaryListPagination(currentPage,pageSize,uid);
-        }catch (Exception e){
+            pagination = userService.getDiaryListPagination(currentPage, pageSize, uid);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new Result(false,"返回日记列表数据失败，请联系管理员解决",null);
+            return new Result(false, "返回日记列表数据失败，请联系管理员解决", null);
         }
-        return new Result(true,"返回日记列表数据成功",pagination);
+        return new Result(true, "返回日记列表数据成功", pagination);
     }
 
 

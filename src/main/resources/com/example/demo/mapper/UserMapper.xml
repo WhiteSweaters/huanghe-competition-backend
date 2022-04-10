@@ -47,6 +47,12 @@
     <select id="getDiaryListPagination" resultType="com.example.demo.pojo.Diary">
         select * from tb_diary where uid=#{uid}  order by date desc limit #{begin},#{end}
     </select>
+    <select id="getAllMeditationCount" resultType="java.lang.Integer">
+        select count(*) from tb_meditation
+    </select>
+    <select id="getMeditationList" resultType="com.example.demo.pojo.Meditation">
+        select * from tb_meditation limit #{begin},#{pageSize}
+    </select>
 
 
 </mapper>

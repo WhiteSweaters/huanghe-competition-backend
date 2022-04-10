@@ -34,7 +34,7 @@ public interface UserService {
 
     List<QueAndAns> getQuestionDetailsById(Long acId);
 
-    List<Meditation> getMeditationList();
+    Pagination<Meditation> getMeditationList(Integer currentPage,Integer pageSize);
 
     List<Sentence> getSentence();
 

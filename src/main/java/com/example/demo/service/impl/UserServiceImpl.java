@@ -139,17 +139,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Meditation> getMeditationList() {
-        List<Meditation> meditationList = userMapper.getMeditationList();
+    public Pagination<Meditation> getMeditationList(Integer currentPage, Integer pageSize) {
+
+//        获取总条数
+        Integer totalCount = userMapper.getAllMeditationCount();
+//        获取总页数
+        Integer totalPage = totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1;
+//        获取开始位置的索引
+        Integer begin = (currentPage - 1) * pageSize;
+//        获取Meditation集合
+        List<Meditation> meditationList = userMapper.getMeditationList(begin,pageSize);
         for (Meditation meditation : meditationList) {
             String image1 = meditation.getImage();
             String image2 = IPConstant.url + image1;
+            meditation.setImage(image2);
             String video1 = meditation.getVideo();
             String video2 = IPConstant.url + video1;
-            meditation.setImage(image2);
             meditation.setVideo(video2);
         }
-        return meditationList;
+
+        return new Pagination<Meditation>(currentPage,pageSize,totalPage,totalCount,meditationList);
     }
 
     @Override
