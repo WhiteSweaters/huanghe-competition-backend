@@ -58,8 +58,6 @@ public class EvaluationController {
         return new Result(true, "返回按钮数据成功", reasonList);
     }
 
-
-
     /**
      * 根据用户ID获取用户的心理状况
      *
