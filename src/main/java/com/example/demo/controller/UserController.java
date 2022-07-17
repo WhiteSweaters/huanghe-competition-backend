@@ -7,6 +7,9 @@ import com.example.demo.utils.QiNiuYunUtil;
 import com.example.demo.utils.SMSUtil;
 import com.example.demo.utils.ValidateCodeUtils;
 import com.example.demo.vo.Pagination;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,10 +20,7 @@ import sun.misc.BASE64Decoder;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,10 +52,13 @@ public class UserController {
         }
 //        手机号合法,发送短信
         try {
+//            发送短信
             String vcode = ValidateCodeUtils.generateValidateCode(4).toString();
             SMSUtil.sendMessage(SMSUtil.LOGIN_TEMPLATE_ID, telephone, vcode);
 //            将生成的验证码发送到redis服务器中暂时储存起来
             redisTemplate.opsForValue().set(SMSUtil.LOGIN_TEMPLATE_ID + telephone, vcode, 5 * 60, TimeUnit.SECONDS);
+
+
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "短信发送失败，请联系管理员解决", null);
@@ -87,6 +90,22 @@ public class UserController {
 
 //        验证码输入正确 通过手机号判断用户是否为新用户
         User user = userService.findUserByTelephone(telephone);
+//        若为新用户。则为此用户设置id 这里我们用假数据模拟一下
+        if (user.getId() == null) {
+            user.setId(9L);
+        }
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("id", user.getId());
+
+//        生成token
+        String token = Jwts.builder().
+                setClaims(claims)
+                .signWith(SignatureAlgorithm.HS256, "nhjksfdhkshfjksdhkfsh")
+                .setExpiration(new DateTime().plusHours(12).toDate())
+                .compact();
+//        然后将token存入redis
+        redisTemplate.opsForValue().set("user" + user.getId(), token,60*60*12,TimeUnit.SECONDS);
+//        最后将生成的token和user一起返回前端 项目已经写好了 就不方便再改了...
 
         return new Result(true, "验证码输入正确，正在跳转页面", user);
     }
@@ -395,7 +414,7 @@ public class UserController {
         Integer pageSize = Integer.parseInt(pageSizeStr);
         Pagination<Meditation> paginationList = null;
         try {
-            paginationList = userService.getMeditationList(currentPage,pageSize);
+            paginationList = userService.getMeditationList(currentPage, pageSize);
         } catch (Exception e) {
             e.printStackTrace();
             return new Result(false, "查询冥想音频文件失败，请与后台管理员联系", null);

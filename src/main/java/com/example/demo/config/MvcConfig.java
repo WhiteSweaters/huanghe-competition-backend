@@ -1,7 +1,10 @@
 package com.example.demo.config;
 
+import com.example.demo.intercepter.MvcIntercepter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -23,4 +26,11 @@ public class MvcConfig implements WebMvcConfigurer {
         }
     }
 
+    @Autowired
+    private MvcIntercepter mvcIntercepter;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(mvcIntercepter).addPathPatterns("/**").excludePathPatterns("/user/checkVcode");//除了checkvcode之外的所有请求都要被拦截
+    }
 }
